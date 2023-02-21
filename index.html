@@ -91,25 +91,60 @@
         </div>
       </nav>
     </div> -->
-    <div class="session-card w-75 border border-dark mx-auto mt-2 d-lg-flex d-grid">
+    <div class="session-card w-75 border border-dark mx-auto mt-2 d-grid">
       <div class="session-body p-2 m-0">
-        <p class="display-6 fs-1 fw-semibold mb-2">Oturum 20</p>
-        <p class="display-6 fs-3 fw-normal mb-2">20.02.2023 - 21.02.2023</p>
-        <p class="display-6 fs-3 fw-light">22.30 - 00.20, <strong>1 s 40 dk</strong></p>
+        <p class="display-6 fs-1 fw-semibold mb-4">Oturum 20</p>
+        <p class="display-6 fs-5 fw-ligh mb-1">20.02.2023 - 21.02.2023</p>
+        <p class="display-6 fs-5 fw-light">22.30 - 00.20, <strong>1 s 40 dk</strong></p>
 
         <div class="session-tags-container mt-4 mb-2 overflow-hidden d-flex flex-wrap gap-2">
-          <span class="session-tag border p-2 border-dark rounded">Bootstrap</span>
-          <span class="session-tag border p-2 border-dark rounded">Javascript</span>
+          <span class="session-tag border p-2 border-dark rounded display-1 fs-6">Bootstrap</span>
+          <span class="session-tag border p-2 border-dark rounded display-1 fs-6">Javascript</span>
         </div>
       </div>
-      <button style="background-color: #ff9494" class="btn ms-lg-auto border-0 rounded-0 border-dark d-lg-flex d-block">
-        <div class="icon-container-big my-auto d-lg-block d-none">
-          <i class="fa-solid fa-caret-right"></i>
+      <div class="collapse show" data-collapse-id="1">
+        <button
+          style="background-color: #ff9494"
+          class="btn border-0 rounded-0 border-dark w-100"
+          data-bs-toggle="collapse"
+          href=".collapse[data-collapse-id='1']"
+        >
+          <div class="icon-container-big mx-auto d-block">
+            <i class="fa-solid fa-caret-down"></i>
+          </div>
+        </button>
+      </div>
+      <div class="collapse" data-collapse-id="1">
+        <button
+          style="background-color: #ff9494"
+          class="btn border-0 rounded-0 border-dark w-100"
+          data-bs-toggle="collapse"
+          href=".collapse[data-collapse-id='1']"
+        >
+          <div class="icon-container-big mx-auto d-block">
+            <i class="fa-solid fa-caret-up"></i>
+          </div>
+        </button>
+      </div>
+      <div class="collapse ms-5" id="collapseExample" data-collapse-id="1">
+        <div class="session-card border border-dark ms-auto d-grid" id="collapseExample">
+          <div class="session-body p-2 m-0">
+            <p class="display-6 fs-1 fw-semibold mb-4">Oturum 20</p>
+            <p class="display-6 fs-5 fw-ligh mb-1">20.02.2023 - 21.02.2023</p>
+            <p class="display-6 fs-5 fw-light">22.30 - 00.20, <strong>1 s 40 dk</strong></p>
+
+            <div class="session-tags-container mt-4 mb-2 overflow-hidden d-flex flex-wrap gap-2">
+              <span class="session-tag border p-2 border-dark rounded display-1 fs-5">Bootstrap</span>
+              <span class="session-tag border p-2 border-dark rounded display-1 fs-5">Javascript</span>
+            </div>
+          </div>
+          <button style="background-color: #ff9494" class="btn border-0 rounded-0 border-dark d-block">
+            <div class="icon-container-big mx-auto d-block">
+              <i class="fa-solid fa-caret-down"></i>
+            </div>
+          </button>
         </div>
-        <div class="icon-container-big mx-auto d-lg-none d-block">
-          <i class="fa-solid fa-caret-down"></i>
-        </div>
-      </button>
+      </div>
     </div>
   </body>
 </html>
