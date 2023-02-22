@@ -1,8 +1,18 @@
 /* Küçük icon container. */
 .icon-container-sm {
-  width: 32px;
-  height: 32px;
+  width: 16px;
+  height: 16px;
   font-size: 16px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Küçük icon container. */
+.icon-container-md {
+  width: 26px;
+  height: 26px;
+  font-size: 26px;
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -10,8 +20,8 @@
 }
 /* Büyük icon container. */
 .icon-container-big {
-  width: 64px;
-  height: 64px;
+  width: 36px;
+  height: 36px;
   font-size: 36px;
   border-radius: 100%;
   display: inline-flex;
@@ -39,4 +49,41 @@
 
 .session-tags-container {
   height: 40px;
+}
+
+.animasyon-acilis {
+  animation: animasyon-acilis 1s ease 0s 1 normal forwards;
+}
+
+.animasyon-kapanis {
+  animation: animasyon-kapanis 1s ease 0s 1 normal forwards;
+}
+
+@keyframes animasyon-acilis {
+  0% {
+    transform: scaleY(0);
+    transform-origin: 100% 0%;
+  }
+
+  100% {
+    transform: scaleY(1);
+    transform-origin: 100% 0%;
+    display: block;
+  }
+}
+
+@keyframes animasyon-kapanis {
+  0% {
+    transform: scaleY(1);
+    transform-origin: 100% 0%;
+  }
+
+  25% {
+    display: none;
+  }
+
+  100% {
+    transform: scaleY(0);
+    transform-origin: 100% 0%;
+  }
 }

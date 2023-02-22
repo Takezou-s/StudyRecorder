@@ -2,25 +2,43 @@ import { Binding } from "../Utility/Binding.js";
 import { NotifyPropertyChanged } from "../Utility/NotifyPropertyChanged.js";
 
 export class Lesson extends NotifyPropertyChanged {
+  #name;
   #startDate;
   #endDate;
   #finished;
   #running;
   #intervalId;
-  #intervalDelay = 400;
+  #intervalDelay = 300;
 
   constructor(name, startDate, endDate, finished = false) {
-    this.name = name;
+    super();
+    this.#name = name;
     this.#startDate = startDate;
     this.#endDate = endDate;
     this.#finished = finished;
 
     this.bindings = [];
-    this.bindings.push(new Binding(this, "startDate", undefined, undefined, false, this._onPropertyChanged("elapsedTime"), undefined));
-    this.bindings.push(new Binding(this, "endDate", undefined, undefined, false, this._onPropertyChanged("elapsedTime"), undefined));
+    this.bindings.push(
+      new Binding(this, "startDate", undefined, undefined, false, this._onPropertyChanged.bind(this, "elapsedTime"), undefined)
+    );
+    this.bindings.push(
+      new Binding(this, "endDate", undefined, undefined, false, this._onPropertyChanged.bind(this, "elapsedTime"), undefined)
+    );
   }
 
   //#region Property get-set
+  get name() {
+    return this.#name;
+  }
+
+  set name(value) {
+    const changed = this._isChanged("name", value);
+    this.#name = value;
+    if (changed) {
+      this._onPropertyChanged("name");
+    }
+  }
+
   get elapsedTime() {
     const diff = this.#endDate - this.#startDate;
     const totalSeconds = diff / 1000;
@@ -88,16 +106,16 @@ export class Lesson extends NotifyPropertyChanged {
   }
   //#endregion
 
-  start() {
+  start = () => {
     if (this.#finished || this.#running) {
       return;
     }
     this._startDate = new Date();
     this._running = true;
-    this.#intervalId = setInterval(intervalHandler, this.#intervalDelay);
-  }
+    this.#intervalId = setInterval(this.intervalHandler, this.#intervalDelay);
+  };
 
-  stop() {
+  stop = () => {
     if (this.#finished || !this.#running) {
       return;
     }
@@ -105,9 +123,9 @@ export class Lesson extends NotifyPropertyChanged {
     this._running = false;
     this._endDate = new Date();
     this._finished = true;
-  }
+  };
 
-  intervalHandler() {
+  intervalHandler = () => {
     this._endDate = new Date();
-  }
+  };
 }

@@ -2,15 +2,13 @@ import { List } from "../Utility/List.js";
 import { NotifyPropertyChanged } from "../Utility/NotifyPropertyChanged.js";
 
 export default class Session extends NotifyPropertyChanged {
-  #startDate;
-  #endDate;
+  #name;
   #finished;
   #running;
 
-  constructor(name, startDate, endDate, finished = false) {
-    this.name = name;
-    this.#startDate = startDate;
-    this.#endDate = endDate;
+  constructor(name, finished = false) {
+    super();
+    this.#name = name;
     this.#finished = finished;
     this.subSessions = new List();
     this.lessons = new List();
@@ -21,59 +19,48 @@ export default class Session extends NotifyPropertyChanged {
     this.lessons.itemRemovedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
   }
   //#region Property get-set
-  get startDate() {
-    return this.#startDate;
+  get name() {
+    return this.#name;
   }
 
-  set _startDate(value) {
-    const changed = this._isChanged("startDate", value);
-    this.#startDate = value;
+  set name(value) {
+    const changed = this._isChanged("name", value);
+    this.#name = value;
     if (changed) {
-      this._onPropertyChanged("startDate");
+      this._onPropertyChanged("name");
     }
+  }
+
+  get startDate() {
+    let earliest = new Date();
+    this.subSessions.items.forEach((value) => {
+      if (value.startDate.getTime() < earliest.getTime()) {
+        earliest = value.startDate;
+      }
+    });
+
+    this.lessons.items.forEach((value) => {
+      if (value.startDate.getTime() < earliest.getTime()) {
+        earliest = value.startDate;
+      }
+    });
+    return earliest;
   }
 
   get endDate() {
-    return this.#endDate;
-  }
+    let latest = new Date();
+    this.subSessions.items.forEach((value) => {
+      if (value.startDate.getTime() < latest.getTime()) {
+        latest = value.startDate;
+      }
+    });
 
-  set _endDate(value) {
-    const changed = this._isChanged("endDate", value);
-    this.#endDate = value;
-    if (changed) {
-      this._onPropertyChanged("endDate");
-    }
-  }
-
-  get finished() {
-    return this.#finished;
-  }
-
-  set _finished(value) {
-    const changed = this._isChanged("finished", value);
-    this.#finished = value;
-    if (changed) {
-      this._onPropertyChanged("finished");
-    }
-  }
-
-  get running() {
-    return this.#running;
-  }
-
-  set _running(value) {
-    const changed = this._isChanged("running", value);
-    this.#running = value;
-    if (changed) {
-      this._onPropertyChanged("running");
-    }
+    this.lessons.items.forEach((value) => {
+      if (value.startDate.getTime() < latest.getTime()) {
+        latest = value.startDate;
+      }
+    });
+    return latest;
   }
   //#endregion
-
-  startSession() {
-    if (this.#finished || this.#running) {
-      return;
-    }
-    this.#startDate = new Date();
-  }
 }
