@@ -23,11 +23,12 @@
     <link rel="stylesheet" href="https://cdn.lineicons.com/4.0/lineicons.css" />
     <!-- My CSS -->
     <link rel="stylesheet" href="style.css" />
-    <script src="anim-deneme.js" defer></script>
+    <link rel="stylesheet" href="collapse.css" />
+    <script src="anim-deneme.js" defer type="module"></script>
     <title>Collapse</title>
   </head>
   <body>
-    <div class="collapse-container w-75 border border-dark mx-auto mt-2 d-grid d-none">
+    <!-- <div class="collapse-container w-75 border border-dark mx-auto mt-2 d-grid">
       <div class="collapse-body display-1 m-5">Collapse body</div>
       <div class="collapse-buttons">
         <div class="collapse show" data-collapse-id="1">
@@ -47,8 +48,95 @@
     </div>
 
     <button class="btn btn-lg btn-outline-dark my-5 px-4 py-3" id="toggleBtn">Toggle</button>
-    <div id="animasyon-deneme" class="animasyon-acilis display-1 border border-dark p-5 text-bg-dark" data-collapse-id="1">
-      Animasyon Deneme
+    <div id="animasyon-deneme" class="b-collapse">
+      <div class="display-1 border border-dark p-5 text-bg-dark" data-collapse-id="1">Animasyon Deneme</div>
+    </div>
+
+    <div id="myDiv" class="collapsing">Bu div elementi görünür.</div> -->
+
+    <div class="b-collapse b-show text-bg-dark border border-light">
+      <div class="display-1 p-5">Collapse Deneme</div>
+      <div class="d-grid">
+        <!-- <button
+          class="btn btn-lg btn-outline-light rounded-1 b-collapse b-show"
+          data-collapser-id="1"
+          data-collapse-command="expand"
+          data-collapse-item-id="1"
+        >
+          Expand
+        </button>
+        <button
+          class="btn btn-lg btn-outline-light rounded-1 b-collapse"
+          data-collapser-id="1"
+          data-collapse-command="collapse"
+          data-collapse-item-id="1"
+        >
+          Collapse
+        </button> -->
+        <button class="btn btn-lg btn-outline-light rounded-1" data-collapser-id="1" data-collapse-command="toggle">Toggle, 1</button>
+      </div>
+
+      <div class="ps-2">
+        <div class="b-collapse text-bg-dark border border-light" data-collapse-item-id="1">
+          <div class="display-1 p-5">Collapse Item Id 1</div>
+          <div class="d-grid">
+            <button class="btn btn-lg btn-outline-light rounded-1" data-collapser-id="2" data-collapse-command="toggle">Toggle</button>
+          </div>
+
+          <div class="b-collapse text-bg-dark border border-light" data-collapse-item-id="2" data-collapse-parent-id="1">
+            <div class="display-1 p-5">Collapse Item Id 2, Parent Id 1</div>
+            <div class="d-grid">
+              <!-- <button class="btn btn-lg btn-outline-light rounded-1" data-collapser-id="2" data-collapse-command="toggle">Toggle</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-2 b-collapse b-show text-bg-dark border border-light b-collapse b-show" data-collapse-item-id="1">
+      <div class="display-1 p-5">Collapse Item Id 1, 1</div>
+      <div class="d-grid">
+        <!-- <button
+          class="btn btn-lg btn-outline-light rounded-1 b-collapse b-show"
+          data-collapser-id="1"
+          data-collapse-command="expand"
+          data-collapse-item-id="1"
+        >
+          Expand
+        </button>
+        <button
+          class="btn btn-lg btn-outline-light rounded-1 b-collapse"
+          data-collapser-id="1"
+          data-collapse-command="collapse"
+          data-collapse-item-id="1"
+        >
+          Collapse
+        </button> -->
+        <!-- <button class="btn btn-lg btn-outline-light rounded-1" data-collapser-id="1" data-collapse-command="toggle">Toggle</button> -->
+      </div>
+    </div>
+
+    <div class="b-collapse text-bg-dark border border-light" data-collapse-item-id="1">
+      <div class="display-1 p-5">Collapse Item Id 1, 2</div>
+      <div class="d-grid">
+        <!-- <button
+          class="btn btn-lg btn-outline-light rounded-1 b-collapse b-show"
+          data-collapser-id="1"
+          data-collapse-command="expand"
+          data-collapse-item-id="1"
+        >
+          Expand
+        </button>
+        <button
+          class="btn btn-lg btn-outline-light rounded-1 b-collapse"
+          data-collapser-id="1"
+          data-collapse-command="collapse"
+          data-collapse-item-id="1"
+        >
+          Collapse
+        </button> -->
+        <!-- <button class="btn btn-lg btn-outline-light rounded-1" data-collapser-id="1" data-collapse-command="toggle">Toggle</button> -->
+      </div>
     </div>
   </body>
 </html>
