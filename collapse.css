@@ -1,8 +1,0 @@
-.b-collapse:not(.b-show) {
-  display: none;
-}
-
-.b-collapsing {
-  overflow: hidden;
-  transition: height 0.35s ease;
-}

@@ -1,0 +1,41 @@
+Collapse: 
+
+Elementlere, açılıp kapanabilme özelliği kazandıran yapıdır. 
+
+
+
+data-* Özellikleri: 
+
+• data-collapse-item-id: Açılıp, kapanacak elemente verilen özelliktir. Butonlar, bu özelliğe verilen değerlere göre elementi yayar veya büzer.
+• data-collapse-parent-id: data-collapse-item-id özelliği bu özellik ile aynı değere sahip obje büzüldüğünde, bu objenin de büzülmesi için kullanılır. 
+• data-collapse-horizontal: Yatay collapse özelliği için true olarak değer verilmelidir.
+
+• data-collapser-id: Butonlara verilen özelliktir. Butona basıldığında, buton, sayfadaki data-collapse-item-id'si bu özelliğe verilen değer ile aynı olan elementleri yayar veya büzer. 
+• data-collapse-command: Butonun nasıl davranacağını belirtir. 
+    • toggle:     Yayılmış elementi büzer, büzülmüş elementi yayar. 
+    • expand:     Elementi yayar. 
+    • collapse:   Elementi büzer. 
+
+
+
+CSS Classları: 
+
+• b-collapse: Collapse özelliğine sahip objelere eklenir, objeyi görünmez yapar. 
+• b-show: Objenin görünür olması için b-collapse classı ile birlikte kullanılır. 
+• b-collapsing: Objenin görünürlük durumunun değişiyor olduğunu belirtir. 
+
+HTML sayfasını tasarlarken, b-collapse ve b-show classları, başlangıçta elementin görünür veya görünmez durumda olmasını ayarlamak için kullanılır. 
+Javascript kodu ile bu classlar elementte uygun durumlara göre düzenlenir. 
+
+
+
+Javascript: 
+
+• Script içerisinde CollapseHandler classından bir obje türetilir: 
+    const collapseHandler = new CollapseHandler("b-collapse", "b-collapsing", "b-show");
+
+• Bu objenin arrangeElements methodu kullanılarak sayfa içerisinde bulunan, collapse özelliğini sağlayan elementler belirlenir. 
+    collapseHandler.arrangeElements();
+
+• Sayfaya sonradan, javascript kodu ile element eklenirse, bu elementler CollapseHandler classına belirtilmelidir.
+    collapseHandler.arrangeElements(element);

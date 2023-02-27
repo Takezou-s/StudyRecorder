@@ -1,16 +1,25 @@
 import { List } from "./List.js";
 
 export class CollapseHandler {
-  constructor(collapseClass, collapsingClass, showClass, dimension) {
+  constructor(collapseClass, collapsingClass, showClass) {
     this._collapseClass = collapseClass;
     this._collapsingClass = collapsingClass;
     this._showClass = showClass;
-    this._dimension = dimension;
+    // this._dimension = horizontal ? "width" : "height";
+    // this._otherDimension = !horizontal ? "width" : "height";
     this._isTransitioning = false;
   }
 
-  arrangeElements() {
-    const collapserElements = [...document.querySelectorAll("[data-collapser-id]")];
+  arrangeElements(element) {
+    let collapserElements = [];
+    if (element) {
+      if (element.matches("[data-collapser-id]")) {
+        collapserElements.push(element);
+      }
+      collapserElements.push(...element.querySelectorAll("[data-collapser-id]"));
+    } else {
+      collapserElements.push(...document.querySelectorAll("[data-collapser-id]"));
+    }
     for (const collapser of collapserElements) {
       collapser.addEventListener("click", (event) => {
         if (event.target.dataset.collapserId) {
@@ -149,16 +158,38 @@ export class CollapseHandler {
     if (this.isExpanded(element)) {
       return;
     }
-    element.style[this._dimension] = 0;
+    // collapse classı kaldırılır.
     element.classList.remove(this._collapseClass);
-    element.classList.add(this._collapsingClass);
-    element.style[this._dimension] = element["scroll" + this._dimension[0].toUpperCase() + this._dimension.slice(1)] + "px";
+    // Elementi tekrar akışa sokar, width-height özelliklerini doğru biçimde yönetmek için kullanılıyor.
+    element.offsetHeight;
+    // Diğer dimension'ı, scroll dimension olarak setler.
+    // element.style[this._getOtherDimensionForElement(element)] = element[this._getScrollDimension(this._getOtherDimensionForElement(element))] + "px";
+    element.style[this._getOtherDimensionForElement(element)] = this._getIntendedValue(
+      element,
+      this._getOtherDimensionForElement(element)
+    );
+    // element.getBoundingClientRect()[this._getOtherDimensionForElement(element)] + "px";
+    // İleride setlenmek üzere scroll dimension değeri oluşturulur.
+    // const scrollDimension = element[this._getScrollDimension(this._getDimensionForElement(element))] + "px";
+    // const scrollDimension = element.getBoundingClientRect()[this._getDimensionForElement(element)] + "px";
+    const scrollDimension = this._getIntendedValue(element, this._getDimensionForElement(element));
+    // Dimension 0'a eşitlenir.
+    element.style[this._getDimensionForElement(element)] = 0;
+    // Tekrar akış.
+    element.offsetHeight;
+    // collapsing class eklenir, animasyon için.
+    element.classList.add(this._getCollapsingClassForElement(element));
+    // Dimension değeri setlenir.
+    element.style[this._getDimensionForElement(element)] = scrollDimension;
+    // Tekrar akış.
+    element.offsetHeight;
   };
 
   _elementIsExpandedHandler = (element) => {
-    element.style[this._dimension] = null;
+    element.style[this._getOtherDimensionForElement(element)] = null;
+    element.style[this._getDimensionForElement(element)] = null;
     element.classList.add(this._collapseClass);
-    element.classList.remove(this._collapsingClass);
+    element.classList.remove(this._getCollapsingClassForElement(element));
     element.classList.add(this._showClass);
   };
 
@@ -166,11 +197,22 @@ export class CollapseHandler {
     if (this.isCollapsed(element)) {
       return;
     }
-    element.style[this._dimension] = element["scroll" + this._dimension[0].toUpperCase() + this._dimension.slice(1)] + "px";
+    // Tekrar akış.
+    element.offsetHeight;
+    // Diğer dimension'ı, scroll dimension olarak setler.
+    element.style[this._getOtherDimensionForElement(element)] = this._getIntendedValue(
+      element,
+      this._getOtherDimensionForElement(element)
+    );
+    // element.getBoundingClientRect()[this._getOtherDimensionForElement(element)] + "px";
+    // Dimension'ı, scroll dimension olarak setler.
+    element.style[this._getDimensionForElement(element)] = this._getIntendedValue(element, this._getDimensionForElement(element));
+    // element.getBoundingClientRect()[this._getDimensionForElement(element)] + "px";
+    // Tekrar akış.
     element.offsetHeight;
     element.classList.remove(this._collapseClass, this._showClass);
-    element.classList.add(this._collapsingClass);
-    element.style[this._dimension] = 0;
+    element.classList.add(this._getCollapsingClassForElement(element));
+    element.style[this._getDimensionForElement(element)] = 0;
     if (element.dataset.collapseItemId) {
       const href = `[data-collapse-parent-id='${element.dataset.collapseItemId}']`;
       const elements = document.querySelectorAll(href);
@@ -181,8 +223,9 @@ export class CollapseHandler {
   };
 
   _elementIsCollapsedHandler = (element) => {
-    element.style[this._dimension] = null;
-    element.classList.remove(this._collapsingClass);
+    element.style[this._getOtherDimensionForElement(element)] = null;
+    element.style[this._getDimensionForElement(element)] = null;
+    element.classList.remove(this._getCollapsingClassForElement(element));
     element.classList.add(this._collapseClass);
     if (element.dataset.collapseItemId) {
       const href = `[data-collapse-parent-id='${element.dataset.collapseItemId}']`;
@@ -191,5 +234,37 @@ export class CollapseHandler {
         this._elementIsCollapsedHandler(subElement);
       }
     }
+  };
+
+  _getScrollDimension(dimension) {
+    return "offset" + dimension[0].toUpperCase() + dimension.slice(1);
+  }
+
+  _getIntendedValue(element, dimension) {
+    return this._getValueFromBoundingClientRect(element, dimension);
+    // return this._getOffsetValue(element, dimension);
+  }
+
+  _getValueFromBoundingClientRect(element, dimension) {
+    return element.getBoundingClientRect()[dimension] + "px";
+  }
+
+  _getOffsetValue(element, dimension) {
+    return element[this._getScrollDimension(dimension)] + "px";
+  }
+
+  _getDimensionForElement(element) {
+    return element.dataset.collapseHorizontal ? "width" : "height";
+  }
+
+  _getOtherDimensionForElement(element) {
+    return !element.dataset.collapseHorizontal ? "width" : "height";
+  }
+
+  _getCollapsingClassForElement = (element) => {
+    let result = this._collapsingClass;
+    if (element.dataset.collapseHorizontal) result = this._collapsingClass + "-horizontal";
+    // return !element.dataset.collapseHorizontal ? this._collapsingClass : this._collapsingClass + "-horizontal";
+    return result;
   };
 }
