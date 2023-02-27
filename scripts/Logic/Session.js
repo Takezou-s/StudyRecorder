@@ -6,18 +6,16 @@ export default class Session extends NotifyPropertyChanged {
   #finished;
   #running;
 
-  constructor(name, finished = false) {
+  constructor(name, parentSession, finished = false) {
     super();
     this.#name = name;
     this.#finished = finished;
-    this.subSessions = new List();
     this.lessons = new List();
 
-    this.subSessions.itemAddedEvent.subscribe(this._onPropertyChanged.bind(this, "subSessions"));
-    this.subSessions.itemRemovedEvent.subscribe(this._onPropertyChanged.bind(this, "subSessions"));
     this.lessons.itemAddedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
     this.lessons.itemRemovedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
   }
+
   //#region Property get-set
   get name() {
     return this.#name;

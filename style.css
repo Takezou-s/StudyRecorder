@@ -50,3 +50,19 @@
 .session-tags-container {
   height: 40px;
 }
+
+/* Collapse */
+.b-collapse:not(.b-show) {
+  display: none !important;
+}
+
+.b-collapsing {
+  overflow: hidden;
+  transition: height 0.35s ease;
+}
+
+.b-collapsing-horizontal {
+  overflow: hidden;
+  transition: width 0.35s ease;
+}
+/* /Collapse */
