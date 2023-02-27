@@ -1,38 +1,69 @@
-import { Lesson } from "./Logic/Lesson.js";
 import Session from "./Logic/Session.js";
 import { Binding } from "./Utility/Binding.js";
-import { NotifyPropertyChangedProxy } from "./Utility/NotifyPropertyChangedProxy.js";
+
 import { Util } from "./Utility/Util.js";
 
-// let obj = { name: "Berat", age: 28 };
-// let objN = new NotifyPropertyChangedProxy(obj);
-
-// objN.propertyChangedEvent.subscribe((event, property) => {
-//   console.log(`${property} property changed! The new value: ${event.sender[property]}`);
-// });
-
-// objN.age = 38;
-// console.log(objN);
-
-// let session = new NotifyPropertyChangedProxy(new Session("Oturum 1"));
-// console.log(session);
-// session.propertyChangedEvent.subscribe((event, property) => {
-//   console.log(`${property} property changed! The new value: ${event.sender[property]}`);
-// });
-// session.name = "Berat";
-// session.startSession();
-// console.log(session);
-
-let lesson = new Lesson("Ders 1");
+const sessionName = document.getElementById("sessionName");
+const sessionElapsedHours = document.getElementById("sessionElapsedHours");
+const sessionElapsedMinutes = document.getElementById("sessionElapsedMinutes");
+const sessionElapsedSeconds = document.getElementById("sessionElapsedSeconds");
 const lessonNameElement = document.getElementById("lessonName");
 const lessonDateElement = document.getElementById("lessonDate");
 const lessonTimeElement = document.getElementById("lessonTime");
-const lessonElapsedElement = lessonTimeElement.querySelector("strong");
-console.log(lessonNameElement, lessonDateElement, lessonTimeElement, lessonElapsedElement);
+const lessonElapsedHours = document.getElementById("lessonElapsedHours");
+const lessonElapsedMinutes = document.getElementById("lessonElapsedMinutes");
+const lessonElapsedSeconds = document.getElementById("lessonElapsedSeconds");
+const sessionStart = document.getElementById("sessionStart");
+const sessionPause = document.getElementById("sessionPause");
+const sessionStop = document.getElementById("sessionStop");
+const sessionNotes = document.getElementById("sessionNotes");
+
+var session = new Session("Oturum - 1");
 
 const bindings = [];
-bindings.push(new Binding(lesson, "name", lessonNameElement, "textContent"));
+bindings.push(new Binding(session, "name", sessionName, "textContent"));
+bindings.push(
+  Binding.CreateWithId("SessionElapsed", session, "elapsedTime", undefined, undefined, false, () => {
+    sessionElapsedHours.textContent = session.elapsedTime.hours;
+    sessionElapsedMinutes.textContent = session.elapsedTime.minutes;
+    sessionElapsedSeconds.textContent = session.elapsedTime.seconds;
+  })
+);
+// bindings.push(Binding.CreateWithId("SessionElapsed", session.elapsedTime, "hours", sessionElapsedHours, "textContent"));
+// bindings.push(Binding.CreateWithId("SessionElapsed", session.elapsedTime, "minutes", sessionElapsedMinutes, "textContent"));
+// bindings.push(Binding.CreateWithId("SessionElapsed", session.elapsedTime, "seconds", sessionElapsedSeconds, "textContent"));
+bindings.push(
+  new Binding(session, "activeLesson", null, null, false, () => {
+    bindLesson();
+  })
+);
 
+const lessonBindings = [];
+function bindLesson() {
+  for (const binding of lessonBindings) {
+    binding.clear();
+  }
+  lessonBindings.splice(0, lessonBindings.length);
+  if (!session || !session.activeLesson) return;
+  lessonBindings.push(new Binding(session.activeLesson, "name", lessonNameElement, "textContent"));
+  lessonBindings.push(
+    new Binding(session.activeLesson, "startDate", undefined, undefined, false, (args) => {
+      setLessonDateAndTime(args.source.startDate, args.source.endDate, args.source.elapsedTime);
+    })
+  );
+  lessonBindings.push(
+    new Binding(session.activeLesson, "endDate", undefined, undefined, false, (args) => {
+      setLessonDateAndTime(args.source.startDate, args.source.endDate, args.source.elapsedTime);
+    })
+  );
+  lessonBindings.push(new Binding(session.activeLesson.elapsedTime, "hours", lessonElapsedHours, "textContent"));
+  lessonBindings.push(new Binding(session.activeLesson.elapsedTime, "minutes", lessonElapsedMinutes, "textContent"));
+  lessonBindings.push(new Binding(session.activeLesson.elapsedTime, "seconds", lessonElapsedSeconds, "textContent"));
+
+  lessonBindings.forEach((b) => {
+    b.initialMap();
+  });
+}
 function setLessonDateAndTime(startDate, endDate, elapsedTime) {
   let start = Util.toDateString(startDate) || "?";
   let end = Util.toDateString(endDate) || "?";
@@ -41,30 +72,25 @@ function setLessonDateAndTime(startDate, endDate, elapsedTime) {
   start = Util.toTimeString(startDate) || "?";
   end = Util.toTimeString(endDate) || "?";
   lessonTimeElement.textContent = start + " - " + end;
-
-  if (elapsedTime) {
-    lessonElapsedElement.textContent =
-      ", " +
-      (elapsedTime.hours > 0 ? elapsedTime.hours + " s " : "") +
-      (elapsedTime.minutes > 0 ? elapsedTime.minutes + " dk " : "") +
-      (elapsedTime.seconds > 0 ? elapsedTime.seconds + " sn " : "");
-    lessonTimeElement.append(lessonElapsedElement);
-  }
 }
 
-bindings.push(
-  new Binding(lesson, "startDate", undefined, undefined, false, (args) => {
-    setLessonDateAndTime(args.source.startDate, args.source.endDate, args.source.elapsedTime);
-  })
-);
-bindings.push(
-  new Binding(lesson, "endDate", undefined, undefined, false, (args) => {
-    setLessonDateAndTime(args.source.startDate, args.source.endDate, args.source.elapsedTime);
-  })
-);
-lesson.name = "Binding Deneme";
-lesson.start();
+bindings.forEach((b) => {
+  b.initialMap();
+});
 
-setTimeout(() => {
-  lesson.stop();
-}, 300000);
+sessionStart.addEventListener("click", () => {
+  session.start();
+});
+
+sessionPause.addEventListener("click", () => {
+  session.pause();
+});
+
+sessionStop.addEventListener("click", () => {
+  session.stop();
+});
+
+let counter = 0;
+sessionNotes.addEventListener("click", () => {
+  counter++;
+});

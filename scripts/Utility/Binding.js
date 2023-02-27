@@ -2,6 +2,11 @@ import { BindingArguments } from "./BindingArguments.js";
 
 // Property binding. Değer değişimi diğer propertye aktarılır. Fonksiyon çalıştırılabilir.
 export class Binding {
+  static CreateWithId(id, source, sourceProperty, target, targetProperty, twoWay, onSourceChanged, onTargetChanged) {
+    const binding = new Binding(source, sourceProperty, target, targetProperty, twoWay, onSourceChanged, onTargetChanged);
+    binding.Id = id;
+    return binding;
+  }
   #cleared;
 
   constructor(source, sourceProperty, target, targetProperty, twoWay, onSourceChanged, onTargetChanged) {
@@ -58,7 +63,9 @@ export class Binding {
     }
     this._unsubscribeTarget();
     try {
-      if (this.source && this.target && this.targetProperty) this.target[this.targetProperty] = this.source[property];
+      if (this.source && this.target && this.targetProperty) {
+        this.target[this.targetProperty] = this.source[property];
+      }
       if (this.onSourceChanged) {
         this.onSourceChanged(this._getBindingArguments());
       }
@@ -76,7 +83,9 @@ export class Binding {
     }
     this._unsubscribeSource();
     try {
-      if (this.source && this.target && this.sourceProperty) this.source[this.sourceProperty] = this.target[property];
+      if (this.source && this.target && this.sourceProperty) {
+        this.source[this.sourceProperty] = this.target[property];
+      }
       if (this.onTargetChanged) {
         this.onTargetChanged(this._getBindingArguments());
       }
@@ -85,6 +94,10 @@ export class Binding {
     } finally {
       this._subscribeSource();
     }
+  };
+
+  initialMap = () => {
+    this.sourcePropertyChangedHandler(null, this.sourceProperty);
   };
 
   _getBindingArguments = () => {

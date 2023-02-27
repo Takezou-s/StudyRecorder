@@ -15,4 +15,12 @@ export class Util {
     if (isNaN(digit)) return;
     return digit < 10 ? "0" + digit : digit;
   }
+
+  static zeroWhenNullOrNaN(num) {
+    let result = num;
+    if (!num || isNaN(num)) {
+      result = 0;
+    }
+    return result;
+  }
 }

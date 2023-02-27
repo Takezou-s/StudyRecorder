@@ -1,64 +1,61 @@
+import { Binding } from "../Utility/Binding.js";
 import { List } from "../Utility/List.js";
-import { NotifyPropertyChanged } from "../Utility/NotifyPropertyChanged.js";
+import { Lapse } from "./Lapse.js";
+import { Lesson } from "./Lesson.js";
 
-export default class Session extends NotifyPropertyChanged {
-  #name;
-  #finished;
-  #running;
+export default class Session extends Lapse {
+  #lessons;
+  #started;
+  #activeLesson;
+  #activeLessonBinding;
 
-  constructor(name, parentSession, finished = false) {
-    super();
-    this.#name = name;
-    this.#finished = finished;
-    this.lessons = new List();
+  constructor(name, startDate, endDate, finished = false) {
+    super(name, startDate, endDate, finished);
+    this.#lessons = new List();
 
-    this.lessons.itemAddedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
-    this.lessons.itemRemovedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
+    this.#lessons.itemAddedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
+    this.#lessons.itemRemovedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
   }
 
-  //#region Property get-set
-  get name() {
-    return this.#name;
+  get lessons() {
+    return [...this.#lessons.items];
   }
 
-  set name(value) {
-    const changed = this._isChanged("name", value);
-    this.#name = value;
+  get activeLesson() {
+    return this.#activeLesson;
+  }
+
+  set _activeLesson(value) {
+    const changed = this._isChanged("activeLesson", value);
+    this.#activeLesson = value;
     if (changed) {
-      this._onPropertyChanged("name");
+      this._onPropertyChanged("activeLesson");
     }
   }
 
-  get startDate() {
-    let earliest = new Date();
-    this.subSessions.items.forEach((value) => {
-      if (value.startDate.getTime() < earliest.getTime()) {
-        earliest = value.startDate;
-      }
-    });
+  _startImp = () => {
+    this._activeLesson = new Lesson(`Ders - ${this.#lessons.count + 1}`);
+    if (this.#activeLessonBinding) {
+      this.#activeLessonBinding.clear();
+    }
+    this.#activeLessonBinding = new Binding(this.activeLesson, "endDate", this, "_endDate");
+    this.#lessons.addItem(this.activeLesson);
+    this.activeLesson.start();
+    if (!this.#started) {
+      this._startDate = this.activeLesson.startDate;
+      this.#started = true;
+    }
+  };
 
-    this.lessons.items.forEach((value) => {
-      if (value.startDate.getTime() < earliest.getTime()) {
-        earliest = value.startDate;
-      }
-    });
-    return earliest;
-  }
+  pause = () => {
+    if (!this.running || this.finished) return;
+    this.activeLesson.stop();
+    this._running = false;
+  };
 
-  get endDate() {
-    let latest = new Date();
-    this.subSessions.items.forEach((value) => {
-      if (value.startDate.getTime() < latest.getTime()) {
-        latest = value.startDate;
-      }
-    });
-
-    this.lessons.items.forEach((value) => {
-      if (value.startDate.getTime() < latest.getTime()) {
-        latest = value.startDate;
-      }
-    });
-    return latest;
-  }
-  //#endregion
+  _stopImp = () => {
+    if (this.activeLesson) this.activeLesson.stop();
+    this._running = false;
+    this._finished = true;
+  };
 }
