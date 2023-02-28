@@ -1,5 +1,6 @@
 import { Binding } from "../Utility/Binding.js";
 import { List } from "../Utility/List.js";
+import { ElapsedTime } from "./ElapsedTime.js";
 import { Lapse } from "./Lapse.js";
 import { Lesson } from "./Lesson.js";
 
@@ -8,13 +9,23 @@ export default class Session extends Lapse {
   #started;
   #activeLesson;
   #activeLessonBinding;
+  #elapsedTime;
 
   constructor(name, startDate, endDate, finished = false) {
     super(name, startDate, endDate, finished);
+    this.#elapsedTime = new ElapsedTime();
     this.#lessons = new List();
 
     this.#lessons.itemAddedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
     this.#lessons.itemRemovedEvent.subscribe(this._onPropertyChanged.bind(this, "lessons"));
+  }
+
+  get elapsedTime() {
+    this.#elapsedTime.reset();
+    for (const lesson of this.#lessons.items) {
+      this.#elapsedTime.add(lesson.elapsedTime);
+    }
+    return this.#elapsedTime;
   }
 
   get lessons() {

@@ -2,6 +2,8 @@ import { Binding } from "../Utility/Binding.js";
 import { NotifyPropertyChanged } from "../Utility/NotifyPropertyChanged.js";
 import { ElapsedTime } from "./ElapsedTime.js";
 
+// Başlangıcı ve bitişi olan, geçen zamanı belirten, başlatılıp-bitirilebilen, isim atanabilen objeler türetmemize yarayan class.
+// Session ve Lesson classları bu classtan kalıtım alırlar.
 export class Lapse extends NotifyPropertyChanged {
   #name;
   #startDate;
@@ -93,6 +95,7 @@ export class Lapse extends NotifyPropertyChanged {
   }
   //#endregion
 
+  // Lapse'i başlatır.
   start = () => {
     if (this.#finished || this.#running) {
       return;
@@ -101,8 +104,10 @@ export class Lapse extends NotifyPropertyChanged {
     this._startImp();
   };
 
+  // Start methodunun implementor methodu, kalıtım alan classlar bu methodu doldururlar.
   _startImp = () => {};
 
+  // Lapse'i, durdurur.
   stop = () => {
     if (this.#finished || !this.#running) {
       return;
@@ -111,5 +116,6 @@ export class Lapse extends NotifyPropertyChanged {
     this._stopImp();
   };
 
+  // Stop methodunun implementor methodu, kalıtım alan classlar bu methodu doldururlar.
   _stopImp = () => {};
 }

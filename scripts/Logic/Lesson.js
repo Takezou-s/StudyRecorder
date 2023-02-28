@@ -1,5 +1,6 @@
 import { Lapse } from "./Lapse.js";
 
+// Ders bilgisini tutmak için kullanılan classi Lapse classından kalıtım alır.
 export class Lesson extends Lapse {
   #intervalDelay = 300;
   #intervalId;
